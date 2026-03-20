@@ -1,94 +1,47 @@
-🌍 Sistema de Consulta de Horário Mundial (TCP & UDP)
+Sistema de Consulta de Horário Mundial (TCP & UDP)
+Este projeto consiste em três implementações de um sistema cliente-servidor para consulta de data e hora baseada em fusos horários (ZoneId), explorando diferentes protocolos e modelos de concorrência em Java.
 
-Este projeto implementa um sistema cliente-servidor para consulta de data e hora com base em fusos horários (ZoneId), explorando diferentes protocolos de rede e modelos de concorrência em Java.
+Autor: Leandro Rosa da Silva
 
-O objetivo é demonstrar, na prática, as diferenças entre:
+Data: 20/03/2026
 
-Comunicação sem conexão (UDP)
+🛠️ Instruções de Execução
+Para todos os comandos abaixo, abra o terminal na pasta raiz do projeto (geralmente a pasta src).
 
-Comunicação orientada à conexão (TCP)
+Versão 1: UDP (Sem Conexão)
+Compilar: javac UDP/*.java
 
-Execução sequencial vs concorrente (multithread)
+Rodar Servidor: java UDP.Servidor
 
-👨‍💻 Autor
+Rodar Cliente: java UDP.Cliente (em um novo terminal)
 
-Leandro Rosa da Silva
+Versão 2: TCP Single-Thread (Conexão Sequencial)
+Compilar: javac TCPSingleThread/*.java
 
-📅 Data: 20/03/2026
+Rodar Servidor: java TCPSingleThread.TCPServer
 
-🚀 Como Executar
+Rodar Cliente: java TCPSingleThread.TCPClient (em um novo terminal)
 
-Abra o terminal na pasta raiz do projeto (geralmente src).
+Versão 3: TCP Multithread (Conexão Simultânea)
+Compilar: javac TCPMultithread/*.java
 
-📡 Versão 1: UDP (Sem Conexão)
-javac UDP/*.java
-java UDP.Servidor
+Rodar Servidor: java TCPMultithread.TCPServerMulti
 
-Em outro terminal:
+Rodar Cliente: java TCPMultithread.TesteCliente (em um novo terminal)
 
-java UDP.Cliente
-🔗 Versão 2: TCP Single-Thread (Sequencial)
-javac TCPSingleThread/*.java
-java TCPSingleThread.TCPServer
-
-Em outro terminal:
-
-java TCPSingleThread.TCPClient
-⚡ Versão 3: TCP Multithread (Concorrente)
-javac TCPMultithread/*.java
-java TCPMultithread.TCPServerMulti
-
-Em outro terminal:
-
-java TCPMultithread.TesteCliente
 🔬 Análise Técnica: Performance e Concorrência
+A principal diferença entre a Versão 2 (Single-Thread) e a Versão 3 (Multithread) reside na forma como o servidor gerencia a fila de conexões.
 
-A principal diferença entre as versões TCP está na forma como o servidor lida com múltiplas conexões.
+Versão 2: TCPSingleThread
+Nesta versão, o servidor utiliza um loop único que aceita uma conexão, processa a requisição e fecha o socket antes de voltar ao topo do loop para aceitar o próximo cliente.
 
-🧵 TCP Single-Thread
+Impacto: Se um cliente demorar para enviar o fuso horário ou se a rede estiver lenta, todos os outros clientes na fila ficarão bloqueados no método accept().
 
-Nesta abordagem, o servidor:
+Performance: Baixa escalabilidade. O tempo de resposta para o N-ésimo cliente é a soma dos tempos de processamento de todos os clientes anteriores.
 
-Aceita uma conexão (accept())
+Versão 3: TCPMultithread
+Aqui, o servidor principal apenas "escuta" e aceita a conexão. No momento em que o clientSocket é criado, ele é passado para uma nova instância de ClienteHandler (que estende Thread), que executa de forma independente.
 
-Processa a requisição
+Impacto: O loop principal do servidor é liberado imediatamente para aceitar o próximo cliente, enquanto o processamento real ocorre em paralelo.
 
-Encerra o socket
-
-Volta a aguardar o próximo cliente
-
-⚠️ Impacto
-
-Clientes são atendidos um por vez
-
-Outros clientes ficam bloqueados na fila
-
-📉 Performance
-
-Baixa escalabilidade
-
-O tempo de resposta cresce linearmente com o número de clientes
-
-🚀 TCP Multithread
-
-Nesta versão, o servidor:
-
-Aceita a conexão
-
-Cria uma nova Thread para processar o cliente
-
-Volta imediatamente para o accept()
-
-⚡ Impacto
-
-Múltiplos clientes são atendidos simultaneamente
-
-O servidor não bloqueia enquanto processa requisições
-
-📈 Performance
-
-Alta escalabilidade
-
-Respostas quase simultâneas
-
-Limitado apenas por CPU e memória
+Performance: Alta escalabilidade. Múltiplos clientes recebem suas respostas quase simultaneamente, limitados apenas pelo hardware (CPU/Memória) do servidor.
