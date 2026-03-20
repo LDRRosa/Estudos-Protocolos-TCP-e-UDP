@@ -1,3 +1,10 @@
+/**
+ * Leandro Rosa da Silva
+ * 20/03/2026
+ * * Resumo: Servidor UDP que recebe identificadores de fuso horário, processa 
+ * a data/hora atual da região solicitada e envia a resposta ao cliente.
+ */
+
 package UDP;
 
 import java.net.DatagramPacket;

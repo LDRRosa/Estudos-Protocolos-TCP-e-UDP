@@ -1,3 +1,10 @@
+/**
+ * Leandro Rosa da Silva
+ * 20/03/2026
+ * * Resumo: Implementação de um cliente UDP que envia solicitações de fuso horário 
+ * para um servidor e exibe a resposta da data e hora correspondente.
+ */
+
 package UDP;
 
 import java.net.DatagramPacket;
@@ -10,18 +17,22 @@ public class Cliente {
 
     public static void main(String[] args) {
 
-        String zone; // pode trocar
-        while(true) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Digite a região (ex: America/Sao_Paulo): ");
-        zone = scanner.nextLine();
-        byte[] msg = zone.getBytes();
-        
-        if (msg.length == 0) {
-            System.out.println("Região não pode ser vazia. Tente novamente.");
-        } else {
-            sendRequest(zone);
-        }}
+        String zone; 
+        while (true) {
+
+            System.out.print("Digite a região (ex: America/Sao_Paulo): ");
+            zone = scanner.nextLine();
+            byte[] msg = zone.getBytes();
+
+            if (msg.length == 0) {
+                System.out.println("Região não pode ser vazia. Tente novamente.");
+                zone = scanner.nextLine();
+                sendRequest(zone);
+            } else {
+                sendRequest(zone);
+            }
+        }
 
     }
 
